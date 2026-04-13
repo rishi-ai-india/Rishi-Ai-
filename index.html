@@ -21,46 +21,52 @@ font-weight:bold;
 }
 
 #chat{
-padding:10px;
 height:70vh;
 overflow:auto;
+padding:10px;
 }
 
 .user{
 background:#2563eb;
 padding:10px;
-margin:5px;
 border-radius:10px;
+margin:5px;
 text-align:right;
 }
 
 .bot{
 background:#1f2937;
 padding:10px;
-margin:5px;
 border-radius:10px;
+margin:5px;
+text-align:left;
 }
 
-#inputBox{
+#input{
 position:fixed;
 bottom:0;
 width:100%;
 display:flex;
+background:#111827;
 }
 
-input{
+#msg{
 flex:1;
 padding:15px;
 border:none;
+outline:none;
+font-size:16px;
 }
 
 button{
 background:#22c55e;
-color:white;
 border:none;
 padding:15px;
+color:white;
+font-size:16px;
 }
 </style>
+
 </head>
 
 <body>
@@ -69,37 +75,52 @@ padding:15px;
 
 <div id="chat"></div>
 
-<div id="inputBox">
-<input id="msg" placeholder="Ask Rishi AI...">
+<div id="input">
+<input id="msg" placeholder="Ask Rishi AI..." />
 <button onclick="send()">Send</button>
 </div>
 
 <script>
-function send(){
+const API_KEY="AIzaSyAgBdVRAPDeRc7kRixJiqzczdvplQtob_g";
+
+async function send(){
 let input=document.getElementById("msg");
 let chat=document.getElementById("chat");
 
 let user=input.value;
+if(!user) return;
 
 chat.innerHTML+=`<div class="user">${user}</div>`;
-
-let reply="";
-
-if(user.toLowerCase().includes("hello") || user.includes("hi"))
-reply="Hello! Main Rishi AI hoon.";
-
-else if(user.includes("kaun"))
-reply="Main Rishi AI hoon. Hindi aur English dono bol sakta hoon.";
-
-else if(user.includes("help"))
-reply="Main aapki madad kar sakta hoon.";
-
-else
-reply="Rishi AI learning... jaldi full AI activate hoga.";
-
-chat.innerHTML+=`<div class="bot">${reply}</div>`;
-
 input.value="";
+
+chat.innerHTML+=`<div class="bot" id="bot">Thinking...</div>`;
+chat.scrollTop=chat.scrollHeight;
+
+try{
+let res=await fetch(
+"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="+API_KEY,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+contents:[{
+parts:[{text:user}]
+}]
+})
+});
+
+let data=await res.json();
+
+let reply=data.candidates[0].content.parts[0].text;
+
+document.getElementById("bot").innerText=reply;
+
+}catch(e){
+document.getElementById("bot").innerText="Error connecting Gemini AI";
+}
+
 chat.scrollTop=chat.scrollHeight;
 }
 </script>
