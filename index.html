@@ -1,127 +1,33 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rishi AI</title>
-
-<style>
-body{
-background:#0b1020;
-color:white;
-font-family:Arial;
-margin:0;
-}
-
-header{
-background:#111827;
-padding:15px;
-text-align:center;
-font-size:22px;
-font-weight:bold;
-}
-
-#chat{
-height:70vh;
-overflow:auto;
-padding:10px;
-}
-
-.user{
-background:#2563eb;
-padding:10px;
-border-radius:10px;
-margin:5px;
-text-align:right;
-}
-
-.bot{
-background:#1f2937;
-padding:10px;
-border-radius:10px;
-margin:5px;
-}
-
-#input{
-position:fixed;
-bottom:0;
-width:100%;
-display:flex;
-background:#111827;
-}
-
-#msg{
-flex:1;
-padding:15px;
-border:none;
-outline:none;
-}
-
-button{
-background:#22c55e;
-border:none;
-padding:15px;
-color:white;
-}
-</style>
-
-</head>
-
-<body>
-
-<header>Rishi AI</header>
-
-<div id="chat"></div>
-
-<div id="input">
-<input id="msg" placeholder="Ask Rishi AI...">
-<button onclick="send()">Send</button>
-</div>
-
 <script>
-const API_KEY = "AIzaSyAgBdVRAPDeRc7kRixJiqzczdvplQtob_g";
-
 async function send(){
-let input = document.getElementById("msg");
-let chat = document.getElementById("chat");
+let input=document.getElementById("msg");
+let chat=document.getElementById("chat");
 
-let user = input.value;
+let user=input.value;
 if(!user) return;
 
-chat.innerHTML += `<div class="user">${user}</div>`;
+chat.innerHTML+=`<div class="user">${user}</div>`;
 input.value="";
 
-let botDiv=document.createElement("div");
-botDiv.className="bot";
-botDiv.innerText="Thinking...";
-chat.appendChild(botDiv);
+let bot=document.createElement("div");
+bot.className="bot";
+bot.innerText="Thinking...";
+chat.appendChild(bot);
 
 try{
-let res=await fetch(
-"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="+API_KEY,
-{
+let res=await fetch("https://rishi-ai-proxy.vercel.app/api",{
 method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-contents:[{
-parts:[{text:user}]
-}]
-})
+headers:{ "Content-Type":"application/json" },
+body:JSON.stringify({message:user})
 });
 
 let data=await res.json();
-let reply=data.candidates[0].content.parts[0].text;
-
-botDiv.innerText=reply;
+bot.innerText=data.reply;
 
 }catch(e){
-botDiv.innerText="Error connecting Gemini AI";
+bot.innerText="AI server offline";
 }
 
 chat.scrollTop=chat.scrollHeight;
 }
 </script>
-
-</body>
-</html>
