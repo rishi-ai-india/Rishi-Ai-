@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rishi AI</title>
 
 <style>
 body{
-font-family: Arial;
-background:#0b0f1a;
+background:#0b1020;
 color:white;
+font-family:Arial;
 margin:0;
 }
 
@@ -17,51 +16,49 @@ header{
 background:#111827;
 padding:15px;
 text-align:center;
-font-size:20px;
+font-size:22px;
 font-weight:bold;
 }
 
 #chat{
+padding:10px;
 height:70vh;
 overflow:auto;
-padding:10px;
-}
-
-.msg{
-padding:10px;
-margin:8px 0;
-border-radius:10px;
 }
 
 .user{
 background:#2563eb;
+padding:10px;
+margin:5px;
+border-radius:10px;
 text-align:right;
 }
 
-.ai{
+.bot{
 background:#1f2937;
+padding:10px;
+margin:5px;
+border-radius:10px;
 }
 
-input{
-width:80%;
-padding:12px;
-border:none;
-outline:none;
-}
-
-button{
-width:20%;
-background:#22c55e;
-border:none;
-color:white;
-font-weight:bold;
-}
-
-.footer{
+#inputBox{
 position:fixed;
 bottom:0;
 width:100%;
 display:flex;
+}
+
+input{
+flex:1;
+padding:15px;
+border:none;
+}
+
+button{
+background:#22c55e;
+color:white;
+border:none;
+padding:15px;
 }
 </style>
 </head>
@@ -72,25 +69,35 @@ display:flex;
 
 <div id="chat"></div>
 
-<div class="footer">
-<input id="input" placeholder="Ask Rishi AI..." />
+<div id="inputBox">
+<input id="msg" placeholder="Ask Rishi AI...">
 <button onclick="send()">Send</button>
 </div>
 
 <script>
 function send(){
-let input=document.getElementById("input");
+let input=document.getElementById("msg");
 let chat=document.getElementById("chat");
 
-let user=document.createElement("div");
-user.className="msg user";
-user.innerText=input.value;
-chat.appendChild(user);
+let user=input.value;
 
-let ai=document.createElement("div");
-ai.className="msg ai";
-ai.innerText="Rishi AI is active. Full AI coming soon.";
-chat.appendChild(ai);
+chat.innerHTML+=`<div class="user">${user}</div>`;
+
+let reply="";
+
+if(user.toLowerCase().includes("hello") || user.includes("hi"))
+reply="Hello! Main Rishi AI hoon.";
+
+else if(user.includes("kaun"))
+reply="Main Rishi AI hoon. Hindi aur English dono bol sakta hoon.";
+
+else if(user.includes("help"))
+reply="Main aapki madad kar sakta hoon.";
+
+else
+reply="Rishi AI learning... jaldi full AI activate hoga.";
+
+chat.innerHTML+=`<div class="bot">${reply}</div>`;
 
 input.value="";
 chat.scrollTop=chat.scrollHeight;
@@ -98,4 +105,4 @@ chat.scrollTop=chat.scrollHeight;
 </script>
 
 </body>
-  </html>
+</html>
