@@ -39,7 +39,6 @@ background:#1f2937;
 padding:10px;
 border-radius:10px;
 margin:5px;
-text-align:left;
 }
 
 #input{
@@ -55,7 +54,6 @@ flex:1;
 padding:15px;
 border:none;
 outline:none;
-font-size:16px;
 }
 
 button{
@@ -63,7 +61,6 @@ background:#22c55e;
 border:none;
 padding:15px;
 color:white;
-font-size:16px;
 }
 </style>
 
@@ -76,25 +73,27 @@ font-size:16px;
 <div id="chat"></div>
 
 <div id="input">
-<input id="msg" placeholder="Ask Rishi AI..." />
+<input id="msg" placeholder="Ask Rishi AI...">
 <button onclick="send()">Send</button>
 </div>
 
 <script>
-const API_KEY="AIzaSyAgBdVRAPDeRc7kRixJiqzczdvplQtob_g";
+const API_KEY = "AIzaSyAgBdVRAPDeRc7kRixJiqzczdvplQtob_g";
 
 async function send(){
-let input=document.getElementById("msg");
-let chat=document.getElementById("chat");
+let input = document.getElementById("msg");
+let chat = document.getElementById("chat");
 
-let user=input.value;
+let user = input.value;
 if(!user) return;
 
-chat.innerHTML+=`<div class="user">${user}</div>`;
+chat.innerHTML += `<div class="user">${user}</div>`;
 input.value="";
 
-chat.innerHTML+=`<div class="bot" id="bot">Thinking...</div>`;
-chat.scrollTop=chat.scrollHeight;
+let botDiv=document.createElement("div");
+botDiv.className="bot";
+botDiv.innerText="Thinking...";
+chat.appendChild(botDiv);
 
 try{
 let res=await fetch(
@@ -112,13 +111,12 @@ parts:[{text:user}]
 });
 
 let data=await res.json();
-
 let reply=data.candidates[0].content.parts[0].text;
 
-document.getElementById("bot").innerText=reply;
+botDiv.innerText=reply;
 
 }catch(e){
-document.getElementById("bot").innerText="Error connecting Gemini AI";
+botDiv.innerText="Error connecting Gemini AI";
 }
 
 chat.scrollTop=chat.scrollHeight;
