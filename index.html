@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -78,6 +77,8 @@ color:white;
 
 <script>
 
+const API_KEY = "AIzaSyAgBdVRAPDeRc7kRixJiqzczdvplQtob_g";
+
 async function send(){
 
 let input=document.getElementById("msg")
@@ -96,22 +97,31 @@ chat.appendChild(bot)
 
 try{
 
-let res=await fetch("https://rishi-ai-proxy.vercel.app/api/chat<",{
+let res=await fetch(
+"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="+API_KEY,
+{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
 },
 body:JSON.stringify({
-message:user
+contents:[{
+parts:[{text:user}]
+}]
 })
-})
+}
+)
 
 let data=await res.json()
 
-bot.innerText=data.reply
+let reply =
+data.candidates?.[0]?.content?.parts?.[0]?.text ||
+"No response"
+
+bot.innerText = reply
 
 }catch(e){
-bot.innerText="Server error"
+bot.innerText="Error connecting Gemini"
 }
 
 chat.scrollTop=chat.scrollHeight
