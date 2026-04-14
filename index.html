@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rishi AI</title>
 
 <style>
@@ -64,7 +64,6 @@ color:white;
 </style>
 
 </head>
-
 <body>
 
 <header>Rishi AI</header>
@@ -77,7 +76,8 @@ color:white;
 </div>
 
 <script>
-const API_KEY = "AIzaSyAgBdVRAPDeRc7kRixJiqzczdvplQtob_g";
+
+const API_KEY = "PASTE_API_KEY_HERE";
 
 async function send(){
 
@@ -97,7 +97,7 @@ chat.appendChild(botDiv);
 
 try{
 
-let res=await fetch(
+let res = await fetch(
 "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="+API_KEY,
 {
 method:"POST",
@@ -109,21 +109,23 @@ parts:[{text:user}]
 })
 });
 
-let data=await res.json();
+let data = await res.json();
 
-let reply =
-data.candidates?.[0]?.content?.parts?.[0]?.text
-|| "No response";
+let reply = "No response";
 
-botDiv.innerText=reply;
+if(data.candidates && data.candidates.length>0){
+reply = data.candidates[0].content.parts[0].text;
+}
+
+botDiv.innerText = reply;
 
 }catch(e){
-botDiv.innerText="Error connecting Gemini AI";
+botDiv.innerText="Error connecting AI";
 }
 
 chat.scrollTop=chat.scrollHeight;
-
 }
+
 </script>
 
 </body>
